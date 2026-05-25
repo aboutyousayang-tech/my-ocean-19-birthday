@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Special For You</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(135deg, #6ba8d6, #8ecae6, #bde0fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 20px;
+    }
+
+    .dino {
+      position: absolute;
+      bottom: -100px;
+      font-size: 3rem;
+      animation: floatUp linear infinite;
+      z-index: 1;
+      opacity: 0.95;
+      cursor: pointer;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .dino:hover {
+      transform: scale(1.08);
+    }
+
+    .d1 { left: 6%; animation-duration: 12s; }
+    .d2 { left: 18%; animation-duration: 10s; }
+    .d3 { left: 34%; animation-duration: 14s; }
+    .d4 { left: 52%; animation-duration: 11s; }
+    .d5 { left: 70%; animation-duration: 13s; }
+    .d6 { left: 86%; animation-duration: 9s; }
+
+    .card {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(14px);
+      border-radius: 30px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+      padding: 26px 24px 32px;
+      text-align: center;
+      z-index: 2;
+      position: relative;
+      color: #1f3a4a;
+      animation: fadeIn 1s ease;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .progress-label {
+      font-size: 0.92rem;
+      opacity: 0.95;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.22);
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .progress-fill {
+      width: 25%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #8ecae6, #90dbf4, #95d5b2);
+      transition: width 0.5s ease;
+    }
+
+    .music-btn {
+      border: none;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: #7fbf9b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      transition: 0.25s ease;
+    }
+
+    .music-btn:hover {
+      transform: translateY(-2px);
+      background: #cdeee0;
+    }
+
+    .screen {
+      display: none;
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+      transition: all 0.45s ease;
+      pointer-events: none;
+    }
+
+    .screen.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #2c5364;
+      font-size: 1rem;
+      opacity: 1;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .cake {
+      font-size: 4rem;
+      margin-bottom: 12px;
+      animation: bounce 1.8s infinite;
+    }
+
+    .clue {
+      margin-bottom: 14px;
+      font-size: 0.98rem;
+      opacity: 0.95;
+    }
+
+    input {
+      width: 85%;
+      max-width: 320px;
+      padding: 13px 16px;
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .small-note {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      opacity: 0.92;
+    }
+
+    .btn-group {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 13px 22px;
+      border-radius: 999px;
+      background: #7fbf9b;
+      color: white;
+      font-weight: bold;
+      font-size: 0.98rem;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      transition: 0.25s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: #95d5b2;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: center;
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .text-side {
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .text-side h1,
+    .text-side .subtitle {
+      text-align: left;
+    }
+
+    .typing-text,
+    .gift-message {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      margin: 20px auto;
+      max-width: 620px;
+      min-height: 90px;
+      padding: 0 6px;
+      white-space: pre-line;
+      color: #1f3a4a;
+      text-shadow: none;
+    }
+
+    .slider-side {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider-box {
+      width: 100%;
+      max-width: 320px;
+      background: rgba(255,255,255,0.16);
+      padding: 16px;
+      border-radius: 26px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .slider-frame {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 4px solid rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.15);
+      perspective: 1200px;
+    }
+
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(0.9) rotateY(15deg);
+      transition: opacity 0.9s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) rotateY(0deg);
+      z-index: 2;
+      animation: float3d 3s ease-in-out infinite;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      transform: scale(0.85) rotateY(-15deg);
+      z-index: 1;
+    }
+
+    .slider-caption {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .message-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.55);
+      line-height: 1.8;
+    }
+
+    .countdown-box {
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .countdown-number {
+      font-size: 6rem;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      margin-top: 16px;
+    }
+
+    .poem-box {
+      text-align: center;
+    }
+
+    .poem-frame {
+      margin-top: 20px;
+      min-height: 550px;
+      padding: 20px;
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.16);
+    }
+
+    .poem-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: inherit;
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px) brightness(0.85);
+      transform: scale(1.08);
+    }
+
+    .poem-overlay {
+      min-height: 550px;
+      position: relative;
+      z-index: 1;
+      background: rgba(30, 60, 90, 0.6);
+      padding: 40px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .poem-text {
+      white-space: pre-line;
+      font-size: 1.2rem;
+      line-height: 2.1;
+      color: white;
+      max-width: 100%;
+      width: 100%;
+      text-align: left;
+      background: rgba(200, 230, 255, 0.18);
+      padding: 28px;
+      border-radius: 22px;
+      backdrop-filter: blur(4px);
+      min-height: 180px;
+      color: #ffffff;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      margin: auto;
+      max-width: 800px;
+
+    }
+
+    .poem-counter {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      opacity: 0.96;
+    }
+
+    .ending-box {
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ending-text {
+      max-width: 720px;
+      line-height: 1.9;
+      font-size: 1.08rem;
+      background: rgba(255,255,255,0.14);
+      padding: 24px;
+      border-radius: 24px;
+      margin-top: 18px;
+      white-space: pre-line;
+    }
+
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(255,255,255,0.95);
+      color: #ff4f8b;
+      padding: 16px 22px;
+      border-radius: 20px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+      pointer-events: none;
+
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 14px;
+      top: -20px;
+      opacity: 0.95;
+      animation: fall linear forwards;
+      z-index: 999;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) rotate(0deg); }
+      to { transform: translateY(-120vh) rotate(360deg); }
+    }
+
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(720deg); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes float3d {
+      0%, 100% {
+        transform: scale(1) rotateY(0deg) translateY(0);
+      }
+      50% {
+        transform: scale(1.03) rotateY(0deg) translateY(-6px);
+      }
+    }
+
+    @media (max-width: 820px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .text-side h1,
+      .text-side .subtitle {
+        text-align: center;
+      }
+
+      .slider-box {
+        max-width: 360px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px 16px 26px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .cake {
+        font-size: 3.3rem;
+      }
+
+      .typing-text,
+      .gift-message,
+      .poem-text,
+      .ending-text {
+        font-size: 0.98rem;
+      }
+
+      .slider-frame {
+        height: 300px;
+      }
+
+      .dino {
+        font-size: 2.3rem;
+      }
+
+      .countdown-number {
+        font-size: 4.8rem;
+      }
+
+      .poem-frame,
+      .poem-overlay {
+        min-height: 500px;
+      }
+    }
+
+    h1, h2 {
+      text-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Dino lucu -->
+  <div class="dino d1" onclick="showToast('dino ini juga ikut sayang kamu 🦖')">🦖</div>
+  <div class="dino d2" onclick="showToast('dia lagi jagain halaman ini buat kamu 🦕')">🦕</div>
+  <div class="dino d3" onclick="showToast('dino kecil ini bilang kamu lucu banget 🦖')">🦖</div>
+  <div class="dino d4" onclick="showToast('gemes nggak sih 😭🦕')">🦕</div>
+  <div class="dino d5" onclick="showToast('hari ini kamu yang paling spesial 🦖')">🦖</div>
+  <div class="dino d6" onclick="showToast('klik aku lagi kalau mau senyum 🦕')">🦕</div>
+
+  <div class="card">
+    <div class="topbar">
+      <div class="progress-wrap">
+        <div class="progress-label" id="progressLabel">Alur cerita: Login</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      <button class="music-btn" id="musicToggleBtn" onclick="toggleMusic()">⏸ Pause Music</button>
+    </div>
+
+    <audio id="bgMusic" loop>
+      <source src="about-you.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- LOGIN -->
+    <div class="screen active" id="loginBox">
+      <div class="cake">🎂</div>
+      <h2>halo, ada sesuatu buat kamu 🦖👀💌</h2>
+      <p class="subtitle">masuk dulu yaa🤫</p>
+      <p class="clue">clue password: lagu pertama kita </p>
+
+      <input type="password" id="passwordInput" placeholder="Masukkan password..." />
+
+      <div class="btn-group">
+        <button onclick="checkPassword()">Masuk</button>
+      </div>
+
+      <p class="small-note"> dan setelah ini, are you ready for something special? 😋</p>
+    </div>
+
+    <!-- MAIN -->
+    <div class="screen" id="mainContent">
+      <div class="main-layout">
+        <div class="text-side">
+          <div class="cake">🎉</div>
+          <h1>untuk adam syah, yang tetap memilih untuk melangkah maju dengan baik dan tanpa sadar telah tumbuh menjadi sosok yang jauh lebih hebat dari sebelumnya, meski perjalanan yang dilalui tidak selalu mudah. 💌</h1>
+          <p class="subtitle">hari ini, biarkan segala bentuk kebaikan datang memelukmu dari segala arah ^_^</p>
+
+          <div class="typing-text" id="typingText"></div>
+
+          <div class="btn-group" style="justify-content:flex-start;">
+            <button onclick="showGift()">Buka 🎁</button>
+          </div>
+        </div>
+
+        <div class="slider-side">
+          <div class="slider-box">
+            <div class="slider-frame">
+        
+              <img src="rawr/fotosatu.jpg.jpeg" width="200">
+
+              <img src="rawr/fotosatu.jpg.jpeg" class="slide active" alt="Foto 1">
+              <img src="rawr/fotodua.jpg.jpeg" class="slide" alt="Foto 2">
+              <img src="rawr/fototiga.jpg.jpeg" class="slide" alt="Foto 3">
+            </div>
+            <p class="slider-caption">sliced of our sweet memories 📸</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KADO -->
+    <div class="screen" id="giftBox">
+      <h2>For Adam Syah🤍</h2>
+
+      <div class="message-box">
+        <p class="gift-message" id="giftMessage"></p>
+      </div>
+
+      <div class="btn-group">
+        <button onclick="backToMain()">Kembali</button>
+        <button onclick="startCountdown()">Lanjut Baca Puisi</button>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="screen" id="countdownBox">
+      <div class="countdown-box">
+        <h2>yang paling spesial... jeng jeng✨</h2>
+        <p class="subtitle">sebentar yaa...</p>
+        <div class="countdown-number" id="countdownNumber">3</div>
+      </div>
+    </div>
+
+    <!-- PUISI -->
+    <div class="screen poem-box" id="poemBox">
+      <h2>kamu pernah bertanya ke aku kan? 
+        "seperti apa aku orangnya?" 
+        akan ku jawab pertanyaan itu, lewat puisi-puisi yang aku tulis mengenai dirimu di mata ku,
+        dan puisi singkat ini punya makna dan pesan untuk kamu</h2>
+
+      <p class="subtitle">beberapa kumpulan kecil yang pernah kutulis, pelan-pelan, tentang kamu wkwkwk
+        jangan lupa pencet dino nya!
+      </p>
+
+      <div class="poem-frame" id="poemFrame">
+        <div class="poem-overlay">
+          <p class="poem-text" id="poemText"></p>
+        </div>
+      </div>
+
+      <p class="poem-counter" id="poemCounter">Puisi 1 dari 9</p>
+
+      <div class="btn-group">
+        <button onclick="prevPoem()">Sebelumnya</button>
+        <button onclick="nextPoem()">Next</button>
+      </div>
+    </div>
+
+    <!-- ENDING -->
+    <div class="screen" id="endingBox">
+      <div class="ending-box">
+        <div class="cake">💌</div>
+        <h2>udah sampai di akhir</h2>
+        <p class="ending-text">
+<p class="ending-text">
+ada hal-hal, yang tidak selalu sempat terucap.
+hal-hal kecil, yang mungkin kamu simpan sendiri,
+lalu kamu lanjutkan hari, seolah semuanya baik-baik saja.
+
+aku tidak selalu tahu, apa saja yang kamu lewati.
+tapi kalau suatu hari, sesuatu terasa lebih berat dari biasanya,
+aku harap kamu ingat satu hal—
+di dekatku,
+kamu tidak harus menjadi apa pun
+selain dirimu sendiri.
+
+terima kasih
+karena sudah bertahan sejauh ini,
+dan tetap menjadi seseorang
+dengan hati sebaik itu.
+
+semoga hal-hal baik, selalu datang ke kamu
+dan semoga bahagiamu, selalu menemukan jalannya pulang.
+
+sekali lagi,
+selamat ulang tahun adam syah ku 🤍.
+
+</p>
+        </p>
+
+        <div class="btn-group">
+          <button onclick="restartAll()">Ulang dari Awal 🔁</button>
+          <button onclick="replayPoems()">Baca Lagi Puisinya 📖</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const correctPassword = "aboutyou";
+
+    const mainText = `Selamat ulang tahun yaa Adam Syah!.
+Semoga semua hal baik datang ke kamu, satu per satu.
+Semoga setiap langkahmu selalu dimudahkan, semoga bahagiamu selalu bertambah, dan semoga kamu selalu dikelilingi oleh cinta, doa, dan hal-hal indah.`;
+
+    const giftText = `Terima kasih karena sudah hadir di dunia ini. 
+    Terima kasih karena sudah jadi seseorang yang istimewa 
+    dengan cara kamu sendiri. 
+    Dan terima kasih, 
+    karena tetap menjadi seseorang yang begitu berarti.`;
+
+    const poems = [
+`hadir
+
+semesta menaruh satu,
+pada lembar sejarah ini,
+yang menetap lama,
+di tiap hurufnya.`,
+
+`sorot
+
+ruang gelap tertutup,
+menerima cahaya,
+silau dari matahari,
+membawa tenang,
+yang telah lama hilang.`,
+
+`tempat
+
+kian juta pahit,
+di dengarnya manis,
+bak semut rangrang,
+menyelimuti pasir.`,
+
+`teduh
+
+dalam sederhana yang berarti,
+dengan cara yang tak banyak ditunjukkan,
+keriuhan yang pernah bergelar,
+perlahan sirna tanpa beban.`,
+
+`kamu
+
+laut tak pernah banyak bicara,
+namun selalu terasa ada,
+kedalamannya tak untuk dipamerkan,
+dan tak semua yang datang,
+benar-benar mengerti isinya.`,
+
+`luruh
+
+ada hal-hal,
+yang tetap diam,
+meski hari terus berjalan
+tidak apa-apa,
+tidak semua beban,
+harus dibawa sejauh itu.`,
+
+`laut dan langit
+
+laut menyimpan banyak hal,
+dan langit tak pernah memaksa,
+ia hanya ada,
+hingga perlahan,
+semuanya terasa lebih ringan.`,
+
+`ada
+
+ada yang tak banyak bicara,
+namun tak pernah absen
+di setiap jatuh
+maupun yang tumbuh jadi tawa.
+saat segalanya runtuh,
+tetap tinggal,
+tanpa banyak tanya,
+tanpa mencoba pergi.
+dan entah sejak kapan,
+yang terlihat biasa itu
+menjadi sesuatu
+yang diam-diam disyukuri.`,
+
+`salam
+
+hai manusia pertama,
+selamat ulang tahun ya❤️.
+untukmu,
+terima kasih💫.`
+
+    ];
+
+    const poemBackgrounds = [
+      "rawr/fotosatu.jpg.jpeg", 
+      "rawr/fotodua.jpg.jpeg", 
+      "rawr/fototiga.jpg.jpeg",
+      "rawr/fotosatu.jpg.jpeg",
+      "rawr/fotodua.jpg.jpeg",
+      "rawr/fototiga.jpg.jpeg",
+      "rawr/fotosatu.jpg.jpeg",
+      "rawr/fotodua.jpg.jpeg",
+      "rawr/fototiga.jpg.jpeg"
+
+    ];
+
+    let mainIndex = 0;
+    let giftIndex = 0;
+    let mainTyped = false;
+    let giftTyped = false;
+    let sliderStarted = false;
+    let currentSlide = 0;
+    let currentPoem = 0;
+    let poemTyping = false;
+
+    const progressMap = {
+      login: { width: "20%", label: "Alur cerita: Login" },
+      main: { width: "40%", label: "Alur cerita: Ucapan" },
+      gift: { width: "60%", label: "Alur cerita: Kado" },
+      countdown: { width: "75%", label: "Alur cerita: Menuju Puisi" },
+      poem: { width: "90%", label: "Alur cerita: Puisi" },
+      ending: { width: "100%", label: "Alur cerita: Akhir" }
+    };
+
+    function switchScreen(hideId, showId, progressKey) {
+      const hideEl = document.getElementById(hideId);
+      const showEl = document.getElementById(showId);
+
+      if (hideEl) hideEl.classList.remove("active");
+
+      setTimeout(() => {
+        showEl.classList.add("active");
+      }, 80);
+
+      updateProgress(progressKey);
+    }
+
+    function updateProgress(key) {
+      document.getElementById("progressFill").style.width = progressMap[key].width;
+      document.getElementById("progressLabel").innerText = progressMap[key].label;
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value.trim();
+
+      if (input === correctPassword) {
+        const music = document.getElementById("bgMusic");
+        if (music.paused) {
+          playMusicSmooth();
+        }
+
+        switchScreen("loginBox", "mainContent", "main");
+        createConfetti();
+        startSlider();
+
+        if (!mainTyped) {
+          typeMainText();
+          mainTyped = true;
+        }
+      } else {
+        alert("Password salah 😢 coba lagi yaa");
+      }
+    }
+
+    function typeMainText() {
+      const target = document.getElementById("typingText");
+      if (mainIndex < mainText.length) {
+        target.innerHTML += mainText.charAt(mainIndex);
+        mainIndex++;
+        setTimeout(typeMainText, 28);
+      }
+    }
+
+    function typeGiftText() {
+      const target = document.getElementById("giftMessage");
+      if (giftIndex < giftText.length) {
+        target.innerHTML += giftText.charAt(giftIndex);
+        giftIndex++;
+        setTimeout(typeGiftText, 28);
+      }
+    }
+
+    function showGift() {
+      switchScreen("mainContent", "giftBox", "gift");
+      createConfetti();
+
+      if (!giftTyped) {
+        typeGiftText();
+        giftTyped = true;
+      }
+    }
+
+    function backToMain() {
+      switchScreen("giftBox", "mainContent", "main");
+    }
+
+    function startCountdown() {
+      switchScreen("giftBox", "countdownBox", "countdown");
+
+      let count = 3;
+      const countdownEl = document.getElementById("countdownNumber");
+      countdownEl.innerText = count;
+
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownEl.innerText = count;
+        } else {
+          clearInterval(interval);
+          countdownEl.innerText = "♡";
+          setTimeout(() => {
+            openPoems();
+          }, 700);
+        }
+      }, 900);
+    }
+
+    function openPoems() {
+      switchScreen("countdownBox", "poemBox", "poem");
+      currentPoem = 0;
+      showPoem();
+    }
+
+    function showPoem() {
+      const poemText = document.getElementById("poemText");
+      const poemFrame = document.getElementById("poemFrame");
+      const poemCounter = document.getElementById("poemCounter");
+
+      poemText.innerHTML = "";
+      poemFrame.style.backgroundImage = `url('${poemBackgrounds[currentPoem % poemBackgrounds.length]}')`;
+      poemCounter.innerText = `Puisi ${currentPoem + 1} dari ${poems.length}`;
+
+      typePoemByLine(poems[currentPoem], poemText);
+    }
+
+    function typePoemByLine(text, element) {
+      if (poemTyping) return;
+      poemTyping = true;
+
+      const lines = text.split("\n");
+      let lineIndex = 0;
+
+      function typeNextLine() {
+        if (lineIndex < lines.length) {
+          element.innerHTML += lines[lineIndex] + "\n";
+          lineIndex++;
+          setTimeout(typeNextLine, 420);
+        } else {
+          poemTyping = false;
+        }
+      }
+
+      typeNextLine();
+    }
+
+    function nextPoem() {
+      if (poemTyping) return;
+
+      if (currentPoem < poems.length - 1) {
+        currentPoem++;
+        showPoem();
+      } else {
+        switchScreen("poemBox", "endingBox", "ending");
+        createConfetti();
+      }
+    }
+
+    function prevPoem() {
+      if (poemTyping) return;
+
+      if (currentPoem > 0) {
+        currentPoem--;
+        showPoem();
+      } else {
+        showToast("ini puisi pertama 🤍");
+      }
+    }
+
+    function replayPoems() {
+      switchScreen("endingBox", "poemBox", "poem");
+      currentPoem = 0;
+      showPoem();
+    }
+
+    function restartAll() {
+      document.getElementById("typingText").innerHTML = "";
+      document.getElementById("giftMessage").innerHTML = "";
+      document.getElementById("passwordInput").value = "";
+
+      mainIndex = 0;
+      giftIndex = 0;
+      mainTyped = false;
+      giftTyped = false;
+      currentPoem = 0;
+      poemTyping = false;
+
+      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+      document.getElementById("loginBox").classList.add("active");
+      updateProgress("login");
+    }
+
+    function startSlider() {
+      if (sliderStarted) return;
+      sliderStarted = true;
+
+      const slides = document.querySelectorAll(".slide");
+
+      setInterval(() => {
+        slides.forEach(slide => {
+        slide.classList.remove("active", "prev");
+        });
+
+        let prevSlide = currentSlide;
+        currentSlide = (currentSlide + 1) % slides.length;
+        
+        slides[prevSlide].classList.add("prev");
+        slides[currentSlide].classList.add("active");
+
+      }, 2500);
+    }
+
+    function createConfetti() {
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+
+    function playMusicSmooth() {
+      const music = document.getElementById("bgMusic");
+      if (!music.paused) return;
+
+      music.volume = 0;
+      music.play().catch(() => {});
+      let vol = 0;
+
+      const interval = setInterval(() => {
+        if (vol < 1) {
+          vol += 0.05;
+          music.volume = Math.min(vol, 1);
+        } else {
+          clearInterval(interval);
+        }
+      }, 180);
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      const btn = document.getElementById("musicToggleBtn");
+
+      if (music.paused) {
+        music.play().catch(() => {});
+        btn.innerText = "⏸ Pause Music";
+      } else {
+        music.pause();
+        btn.innerText = "▶ Play Music";
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
+    }
+
+    document.addEventListener("visibilitychange", function() {
+      const music = document.getElementById("bgMusic");
+      const btn = document.getElementById("musicToggleBtn");
+
+      if (!document.hidden && btn.innerText.includes("Pause") && music.paused) {
+        music.play().catch(() => {});
+      }
+    });
+
+    document.getElementById("passwordInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkPassword();
+      }
+    });
+  </script>
+</body>
+</html>
